@@ -1,0 +1,52 @@
+{% extends 'core.html' %}
+{% load static %}
+{% block main %}
+<form class="form-group"  autocomplete="off" method="POST">
+    {% csrf_token %} 
+        <div class="container-fluid border bg-white w-75 h-75 mt-5" style="max-width:800px;" >
+            <div class="row">
+                <div class="col-12 text-white  text-center text-weight-bold py-2 bg-dark"><h1>SIGNUP</h1></div>
+            </div>
+            <div class="col-12  text-center pt-2 " id="msg" style="color: red;"></div>
+            <div class="row mt-4">
+                <div class="col-sm-12 col-lg-5 offset-lg-1 text-dark text-left mb-2 px-2 font-weight-bold">
+                    {{form.name.label_tag}}
+                    {{form.name}}
+                </div>
+                <div class="col-sm-12 col-lg-5  text-dark text-left mb-2 px-2 font-weight-bold">
+                    {{form.email.label_tag}}
+                    {{form.email}}
+                </div>
+                <div class="col-sm-12 col-lg-5 offset-lg-1 font-weight-bold text-dark text-left mb-2 px-2">
+                    {{form.phone.label_tag}}
+                    {{form.phone}}
+                </div>
+                <div class="col-sm-12 col-lg-5  text-dark text-left mb-2 font-weight-bold px-2">
+                    {{form.gender.label_tag}}
+                    {{form.gender}}
+                </div>
+                <div class="col-sm-12 col-lg-5 offset-lg-1 text-dark text-left mb-2 px-2 font-weight-bold">
+                    {{form.password.label_tag}}
+                    {{form.password}}
+                </div>
+                <div class="col-sm-12 col-lg-5  text-dark text-left mb-2 font-weight-bold px-2">
+                    {{form.cpassword.label_tag}}
+                    {{form.cpassword}}
+                </div>
+                <div class="col-12 mt-2 text-center">
+                    {{form.accept}}
+                    <a href="#" target="_blank">-Term and Condition</a>
+                </div>
+            <div class="w-100"></div>
+            <div class="row mt-2" style="margin: auto;">
+                <div class="col-6  text-right text-weight-bold my-2 pb-4 ">
+                    <input type="submit" value="Submit" class="btn btn-primary" id="submit">
+                </div>
+                <div class="col-6 text-left text-weight-bold my-2 ">
+                    <a href="{% url 'login' %}"  class="btn btn-primary">Login</a>
+                </div>
+            </div>
+        </div> 
+</form>
+{% include 'validate.html' %}
+{% endblock main %}

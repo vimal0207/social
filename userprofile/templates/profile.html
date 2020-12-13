@@ -1,0 +1,83 @@
+{% extends 'core.html' %}
+{% load static %}
+{% block main %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-3 col-md-2 ">
+            <div class="bg-white mt-5 text-primary shadow-sm" id="friendarea" style="display: none;">
+                <h6 class="border-bottom pt-2 text-center">Friend List</h6>
+                {% for i in friend %}
+                    <a href="{% url 'friendprofile' i.0 %}" target="_blank" class="pl-3" style="cursor: pointer;word-wrap: break-word;">
+                        <img src="{% static 'icons/friends.svg' %}" width='30' height="30" class="img-fluid mr-2 py-2 rounded-circle">{{i.1}} 
+                    </a><br>                                          
+                {% endfor %}
+            </div>
+            <div class="bg-white mt-5 text-primary shadow-sm" id="mutualfriendarea" style="display: none;">
+                <h6 class="border-bottom pt-2 text-center">Mutual Friend</h6>
+                {% for i in friend %}
+                    {% if i in userfriend %}
+                        <a href="{% url 'friendprofile' i.0 %}" target="_blank" class="pl-3" style="cursor: pointer;word-wrap: break-word;">
+                            <img src="{% static 'icons/friends.svg' %}" width='30' height="30" class="img-fluid mr-2 py-2 rounded-circle">{{i.1}} 
+                        </a><br>                                          
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+        <div class="col-12 col-md-8 col-lg-6">
+            <div class="pt-5 pb-3">
+                <div class="container  border shadow-sm bg-white" id="postsection">
+                    <div class="row">
+                        <div class="col-6 py-2 text-center a">
+                            <img src="{% static 'icons/profile.svg' %}" class="img-fluid "width='250' height="250" alt="Image" id="shareimage">
+                        </div>
+                        <div class="col-6 py-2 a text-capitalize font-weight-bold font-italic">
+                            <table>
+                                {% for i,j in user.items %}
+                                    <tr  style="word-wrap: break-word;">
+                                        <td class="p-2">{{i}}</td>
+                                        {% if 'email' in i %}
+                                            <td style="text-transform: none;" class="p-2">{{j}}</td>
+                                        {% else %}
+                                            <td class="p-2">{{j}}</td>
+                                        {% endif %}
+                                </tr>
+                                {% endfor %}
+                            </table>
+                        </div >
+                    </div>
+                </div>
+                <div class="container">
+                    <div class="row my-2 bg-white text-center text-primary shadow-sm pb-2 a">
+                        <div class="col-6"><h5 style="cursor: pointer;" onclick="$('#friendarea').toggle()">Friends</h5></div>
+                        <div class="col-6"><h5 style="cursor: pointer;" onclick="$('#mutualfriendarea').toggle()">Mutual Friend</h5></div>
+                    </div>
+                </div>
+                <div class="container  pb-2">
+                    {% for i in post %}
+                    <div class="row my-2 bg-white text-center shadow-sm pb-2">
+
+                        <div class="col-12 text-left text-primary py-2 a">
+                            <img src="{% static 'icons/friends.svg' %}" class="img-fluid a rounded-circle" alt="" width="50vw" height="50vw">{{i.name}}
+                        </div>
+                        {% if i.image %}
+                                <div class="col-12 py-2 px-3">
+                                    <img src="{{i.image}}"  class="img-fluid" alt="" width="250vw" height="200vw">
+                                </div>
+                        {% endif %}
+                        
+                        {% if i.article %}
+                                <div class="col-12 px-3 text-left text-dark" >
+                                    <article style="word-wrap: break-word;">{{i.article}}</article>
+                                </div>
+                        {% endif %}
+                    </div>      
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <div class="col-3">
+            
+        </div>
+    </div>
+</div>
+{% endblock main %}

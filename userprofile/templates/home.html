@@ -1,0 +1,129 @@
+{% extends 'core.html' %}
+{% load static %}
+{% block main %}
+<form action="" method="POST">{% csrf_token %}
+    <div class="container-fluid">
+        <div class="row bg-primary" id="top">
+            <div class="col-2 col-md-1 text-center py-2 a"  >
+                <a href="{% url 'friendprofile' friend.id %}" target="__blank">
+                    <img src="{% static 'icons/profile.svg' %}" alt="" width="40px" height="40px" class="zoom img-fluid">
+                </a>
+            </div>
+            <div class="col-6 col-sm-5 col-md-5 left col-lg-4 a" >
+                <input type="text" class="form-control shadow-sm pr-5" placeholder="Search" id='search' autocomplete="off">
+                <div class="searchoption" id="option" style="z-index: 1;"></div>
+            </div>
+            <div class='a' style="z-index: 1;">
+                <img src="{% static 'icons/search.svg' %}" alt="" width="20px" height="20px" class="ml-n5">
+            </div>
+            <div class="col-2 a" >
+                <img src="{% static 'icons/friends.svg' %}" alt="" width="40px" height="40px" class="img-fluid " id="friend">
+                {% if count %}
+                    <sup class="text-danger font-weight-bold">{{count}}</sup>
+                {% endif %}
+            </div>
+            <div class="a col pr-2 text-right">
+                <a href="{% url 'logout' %}"><img src="{% static 'icons/logout.svg' %}" alt="logout" title="Logout" width="40px" height="40px" class="img-fluid " id="friend">
+                </a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 col-md-3">
+                <div class="bg-white mt-5 text-primary shadow-sm" id="friendarea" style="display: none;">
+                    <h6 class="border-bottom pt-2  text-center">Friend List</h6>
+                    <div>
+                        {% for i in friend.friendlist %}
+                        <a href="{% url 'friendprofile' i.0 %}" target="_blank" class="pl-3" style="cursor: pointer;word-wrap: break-word;">
+                            <img src="{% static 'icons/profile.svg' %}" width='30' height="30" class="img-fluid mr-2 py-2 rounded-circle">{{i.1}} 
+                        </a><br>                                          
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-6">
+                <div class="pt-5 pb-3">
+                    <div class="container  border shadow-sm bg-white" id="postsection">
+                        <div class="row">
+                            <div class="col-12">
+                                <h5 class="text-primary border-bottom py-2 text-center">Share Something</h5>
+                            </div>
+                            <div class="col-6 py-2 text-center">
+                                <img src="{% static 'icons/image.svg' %}" width='30' height="30" alt="Image" id="shareimage">
+                                <h6>Image</h6>
+                            </div>
+                            <div class="col-6 py-2 text-center">
+                                <img src="{% static 'icons/post.svg' %}" width='30' height="30" alt="Post" id="sharearticle">
+                                <h6>Article</h6>
+                            </div >
+                        </div>
+                    </div>
+                    <div class="container  border shadow-sm text-center pb-2" id="imguploadsection" style="display: none;">
+                        <div class="row"> 
+                            <div class="col-12 my-2 px-2 border bg-white a" style="height:300px;max-height: 400px;" >
+                                <img src="" alt="" id="imgarea" width="250px" height="250px" class="d-none">
+                            </div>
+                            <div class="col-4">
+                                <input type="button" class="btn btn-outline-primary btn-sm" value="Submit" id="imgsubmit">
+                            </div>
+                            <div class="col-4">
+                                <input type="file" id="imgupload" style="display:none" accept="image/*"/>
+                                <input type="button" id="OpenImgUpload" class="btn btn-sm btn-outline-dark" value="Upload"> 
+                            </div>
+                            <div class="col-4">
+                                <input type="button" class="btn btn-outline-danger btn-sm" value="Cancel" onclick="clearimg()">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="container  border shadow-sm text-center pb-2" id="articleuploadsection" style="display: none;">
+                        <div class="row"> 
+                            <div class="col-12 my-2 px-2 border bg-white a" style="height:300px;max-height: 400px;">
+                                <textarea name="articlearea" id="articlearea" cols="50" rows="11" style="resize: none;" 
+                                    placeholder="Write Your Article Here...."></textarea>
+                            </div>
+                            <div class="col-6">
+                                <input type="button" class="btn btn-outline-primary btn-sm" value="Submit" id="articlesubmit">
+                            </div>
+                            <div class="col-6">
+                                <input type="button" class="btn btn-outline-danger btn-sm" value="Cancel" onclick="cleararticle()" id="cances">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="container  mw-100 pb-2">
+                        {% for i in post %}
+                        <div class="row my-2 bg-white text-center shadow-sm pb-2">
+                            <a href="{% url 'friendprofile' i.userid %}" target="__blank" class="col-12 text-left text-primary py-2 a" style="cursor: pointer;">
+                                <img src="{% static 'icons/friends.svg' %}" class="img-fluid a rounded-circle" alt="" width="50vw" height="50vw">{{i.name}}
+                            </a>
+                            {% if i.image %}
+                                    <div class="col-12 py-2 px-3">
+                                        <img src="{{i.image}}"  class="img-fluid" alt="" width="250vw" height="200vw">
+                                    </div>
+                            {% endif %}
+                            
+                            {% if i.article %}
+                                    <div class="col-12 px-3 text-left text-dark" >
+                                        <article style="word-wrap: break-word;">{{i.article}}</article>
+                                    </div>
+                            {% endif %}
+                        </div>      
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-3">
+                <div class="bg-white  mt-5 text-primary shadow-sm" style="display: none;" id="friendrequestarea">
+                    <h6 class="border-bottom pt-2 text-center">Friend Request</h6>
+                    {% for i in friend.friendrequest %}
+                    <div target="_blank" class="pl-3" style="cursor: pointer;word-wrap: break-word;">
+                        <img src="{% static 'icons/friends.svg' %}" width='30' height="30" class="img-fluid mr-2 py-2 rounded-circle">{{i.1}}
+                        <span class="text-danger pr-2" style="float: right;font-size: 20px;" onclick="sendrequest('{{i.0}}','{{i.1}}',0)">x</span> 
+                        <span class="text-success pr-2" style="float: right;font-size: 20px;" onclick="sendrequest('{{i.0}}','{{i.1}}',1)">+</span> 
+                    </div>                                          
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+{% include 'homevalidation.html' %}
+{% endblock main %} 

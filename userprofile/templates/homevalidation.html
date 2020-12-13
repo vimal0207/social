@@ -1,0 +1,181 @@
+{% load static %}
+<script>
+    function frienddetail(id){
+        let a= document.createElement('a');
+        a.target= '_blank';
+        a.href=`../friendprofile/${id}/`;
+        console.log(id)
+        console.log(a.href)
+        a.click();
+    }
+    function sendrequest(id,name,response=-1){
+        $('#option').html('');
+        $('#search').val('');
+        var csr=$("input[name=csrfmiddlewaretoken]").val();
+        mydata={id:id,name:decodeURIComponent(name),csrfmiddlewaretoken:csr};
+        if(response==0 || response==1){
+            mydata['response']=response;
+        }
+        $.ajax({
+                url: "{% url 'sendrequest' %}",
+                method: "POST",
+                data: mydata,
+                success: function(data){
+                    if(data['status']==1){
+                        $('#option').html('');
+                    }
+                    else{
+                        alert('Please retry');
+                    }
+                }
+            });
+    }   
+    function clearimg(){
+        $("#imgupload").val('');
+        $('#imgarea').attr("src", '').addClass('d-none');
+        $('#imguploadsection').hide();
+    }
+    function cleararticle(){
+        $('#articleuploadsection').hide();
+        $('#articlearea').val('');
+    };
+$(document).ready(function(){
+    $('#shareimage').click(function(){
+        cleararticle();
+        $('#imguploadsection').show();
+    });
+    $('#sharearticle').click(function(){
+        clearimg();
+        $('#articleuploadsection').show();
+    });
+    $('#articlesubmit').click(function(){
+        myarticle=$('#articlearea').val();
+        if(myarticle.length>0){
+            var csr=$("input[name=csrfmiddlewaretoken]").val();
+            mydata={article:myarticle,csrfmiddlewaretoken:csr};
+            $.ajax({
+                    url: "{% url 'post' %}",
+                    method: "POST",
+                    data: mydata,
+                    success: function(data){
+                        if(data['status']==1){
+                            cleararticle();
+                        }
+                        else{
+                            alert('Please retry');
+                        }
+                    }
+            });
+        }
+        else{
+            alert('Please write something');
+        }
+
+    });
+    $('#OpenImgUpload').click(function(){
+        $('#imgupload').trigger('click');
+        $('#imgupload').change(function(){
+            var file = $("#imgupload").get(0).files[0];
+            if(file){
+                var reader = new FileReader();
+                reader.onload = function(){
+                    $('#imgarea').removeClass('d-none');
+                    $('#imgarea').attr("src", reader.result);
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+    });
+    $('#imgsubmit').click(function(){
+        myimg=$('#imgarea').attr("src")
+        if(myimg){
+            if(myimg.substring(5,10)=='image'){
+                var csr=$("input[name=csrfmiddlewaretoken]").val();
+                mydata={image:myimg,csrfmiddlewaretoken:csr};
+                $.ajax({
+                        url: "{% url 'post' %}",
+                        method: "POST",
+                        data: mydata,
+                        success: function(data){
+                            if(data['status']==1){
+                                clearimg();
+                            }
+                            else{
+                                alert('Please retry');
+                            }
+                        }
+                });
+            }
+            else{
+                alert('Only image file')
+            }
+        }
+        else{
+            alert("No image selected")
+        }
+    });
+    $(window).resize(function(){
+        $('#option').css('width',document.querySelector('#search').offsetWidth+'px')
+    });
+    $('#option').mouseleave(function(){
+        $('#option').html('');
+    });
+    $('#friend').click(function(){
+        $('#friendarea,#friendrequestarea').toggle();
+    });
+    $('#search').on('keyup focusin click', function(){
+        name=$(this).val();
+        $('#option').css('width',document.querySelector('#search').offsetWidth+'px')
+        if(name==''){
+            $('#option').html('');
+        }
+        else{
+            var csr=$("input[name=csrfmiddlewaretoken]").val();
+            var mydata={name:name,csrfmiddlewaretoken:csr}
+            $.ajax({
+                url: "{% url 'search' %}",
+                method: "POST",
+                data: mydata,
+                success: function(data){
+                    if(data['friendlist'].length > 0){
+                        let friendlist=data['friendlist'];
+                        let choice="";
+                        let a=[],b=[];
+                        if(data['friend']){
+                            a = data['friend'].map(function(i){ return Number(i[0]) });
+                        }
+                        if(data['friendrequestsend']){
+                            b= data['friendrequestsend'].map(function(i){return Number(i[0])});
+                        }
+                        for(i of friendlist){
+                            console.log(i.id)
+                            if(a.indexOf(i.id)!=-1){
+                                choice="<tr><td class='a'>"+"<img src=\"{% static 'icons/profile.svg' %}\" class='rounded-circle' width='30px' height='30px'></td>" +
+                            "<td ><span onclick=frienddetail(" + i['id'] + ") class='text-primary' style='cursor:pointer'><h6 class='a'>" + 
+                                i.name +"</h6></span></td></tr>" + choice;
+                            }
+                            else if(b.indexOf(i.id)!=-1 ){
+                                choice=choice+"<tr><td class='a'>"+"<img src=\"{% static 'icons/profile.svg' %}\" class='rounded-circle' width='30px' height='30px'></td>" +
+                            "<td ><span class='text-primary' style='cursor:pointer'><h6 class='a'>" + 
+                                i.name +"</h6></span></td><td><span title='request send' style='cursor:pointer' class='text-dark')>+</span></td></tr>";
+                            }
+                            else{
+                            choice=choice+"<tr><td class='a'>"+"<img src=\"{% static 'icons/profile.svg' %}\" class='rounded-circle' width='30px' height='30px'></td>" +
+                            "<td ><span class='text-primary' style='cursor:pointer'><h6 class='a'>" + i.name +
+                            "</h6></span></td><td><span style='cursor:pointer' class='text-primary' onclick=sendrequest(" + i.id + ',\'' 
+                                + encodeURIComponent(i.name) + "\')>+</span></td></tr>";
+                        }
+                        }
+                        choice="<table>"+choice+"</table>";
+                        $('#option').html(choice);
+                    }
+                    else{
+                        choice="<h6 class='a text-danger'>No user with this id</h6>";
+                        $('#option').html(choice);
+                    }
+                }
+        });
+    }
+    })
+});
+</script>

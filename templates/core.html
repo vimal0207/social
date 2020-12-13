@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{%static 'css\bootstrap.css' %}">
+    <link rel="stylesheet"  href="https://code.jquery.com/ui/1.12.1/themes/ui-lightness/jquery-ui.css"/>
+    <script src="http://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <link rel="stylesheet" href="{%static 'css\core.css' %}">
+    <title>{{ptitle}}</title>
+    {% block style1 %}{% endblock style1 %}
+</head>
+<body style="background:whitesmoke;">   
+                {% block main %} {% endblock main %} 
+</body>
+</html>

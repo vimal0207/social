@@ -1,0 +1,69 @@
+<script>
+    var count=0;
+    function checkdata(key,value){
+        csr=$("input[name=csrfmiddlewaretoken]").val();
+        mydata={[key]:value,csrfmiddlewaretoken:csr}
+        $.ajax({
+                url: "{% url 'validate' %}",
+                method: "POST",
+                data: mydata,
+                success: function(data){
+                    checkstatus(key,data['status']);
+                }
+            });
+    }
+    function checkstatus(key,data){
+        if(data==0){
+            addcss('#id_'+key,key+' already used')
+        }
+        else{
+            removecss('#id_'+key)
+        }
+    }
+    function removecss(id){
+        $(id).removeClass('warning')
+        $('#msg').text('');
+    }
+    function addcss(id,msg){
+        $(id).addClass('warning').val('');
+        $('#msg').text(msg);
+    }
+    $(document).ready(function(){
+        $('#id_email').blur(function(){
+            var em=$(this).val();
+            if(em.search('@gmail.com')!=-1){
+                checkdata('email',em);
+            }
+            else{
+                addcss('#id_email','Only gmail id')
+            }
+        });
+        $('#id_phone').blur(function(){
+            var ph=$(this).val();
+            if(ph.length==10){
+                checkdata('phone',ph);
+            }
+            else{
+                addcss('#id_phone','Use valid 10 digit number')
+            }
+        });
+        $('#id_password').blur(function(){
+            var pass=$(this).val();
+            if(pass.length<5){
+                addcss('#id_password','Use valid password grater than 5')
+            }
+            else{
+                removecss('#id_password')
+            }
+        });
+        $('#id_cpassword').blur(function(){
+            var pass=$(this).val();
+            if(pass!==$('#id_password').val()){
+                addcss('#id_cpassword','Check password')
+            }
+            else{
+                removecss('#id_cpassword')
+            }
+        });
+    });
+</script>

@@ -1,0 +1,22 @@
+.warning{
+    color:white;
+    background-color: red;
+}
+
+.searchlist{
+    list-style-type: none;
+}
+
+.searchoption{
+    position: absolute;
+    background-color: white;
+    max-height: 400px;
+    width:inherit;
+}
+
+.a{
+    margin-top: auto;
+    margin-bottom: auto;
+    padding: 10px 5px 10px 10px;
+}
+
